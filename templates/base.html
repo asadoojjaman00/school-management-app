@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduManage | School Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .profile-card {
+            transform-origin: top right;
+            transition: all 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page {
+            display: none;
+        }
+        .active-page {
+            display: block;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        .text-primary {
+            color: #10b981;
+        }
+        .border-primary {
+            border-color: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="gradient-bg text-white">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                    <h1 class="text-2xl font-bold">EduManage</h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="nav-link hover:text-blue-200 transition-colors" data-page="dashboard">Dashboard</a>
+                    <a href="#" class="nav-link hover:text-blue-200 transition-colors" data-page="classes">Classes</a>
+                    <a href="#" class="nav-link hover:text-blue-200 transition-colors" data-page="students">Students</a>
+                    <a href="#" class="nav-link hover:text-blue-200 transition-colors" data-page="teachers">Teachers</a>
+                    <a href="#" class="nav-link hover:text-blue-200 transition-colors" data-page="schedule">Schedule</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="profile-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </button>
+                    <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors hidden">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Login Page -->
+        
+        {% block content %}
+        {% endblock %}
+        <!-- Registration Page -->
+        
+
+        <!-- Dashboard Page -->
+        
+
+        <!-- Profile Page -->
+        
+    </main>
+
+    <!-- Profile Card (Hidden by default) -->
+    <div id="profile-card" class="fixed top-20 right-4 w-80 bg-white rounded-xl card-shadow p-6 profile-card hidden z-50">
+        <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-xl font-bold">
+                    JD
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800">John Doe</h3>
+                    <p class="text-sm text-gray-600">Student</p>
+                </div>
+            </div>
+            <button id="close-profile" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="border-t border-gray-200 pt-4">
+            <div class="mb-3">
+                <p class="text-sm text-gray-500">Date of Birth</p>
+                <p class="text-gray-800">March 15, 2005</p>
+            </div>
+            
+            <div class="mb-3">
+                <p class="text-sm text-gray-500">Roll Number</p>
+                <p class="text-gray-800">STU-2023-045</p>
+            </div>
+            
+            <div class="mb-3">
+                <p class="text-sm text-gray-500">Bio</p>
+                <p class="text-gray-800">Passionate about science and mathematics. Active member of the school's robotics club.</p>
+            </div>
+            
+            <div class="mb-3">
+                <p class="text-sm text-gray-500">Class</p>
+                <p class="text-gray-800">Grade 11 - Science</p>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-sm text-gray-500">Subjects</p>
+                <div class="flex flex-wrap gap-2 mt-1">
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Mathematics</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Physics</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Chemistry</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Biology</span>
+                </div>
+            </div>
+            
+            <div class="flex space-x-2">
+                <button class="flex-1 bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 transition-colors" id="edit-profile-btn">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </button>
+                <button class="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">EduManage</h3>
+                    <p class="text-gray-400">Streamlining education management for modern schools and institutions.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Community</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>123 Education St, Learn City</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>info@edumanage.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 EduManage. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page navigation functionality
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+        const logoutBtn = document.getElementById('logout-btn');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // Show/hide logout button based on page
+            if (pageId === 'login-page' || pageId === 'register-page') {
+                logoutBtn.classList.add('hidden');
+            } else {
+                logoutBtn.classList.remove('hidden');
+            }
+        }
+        
+        // Navigation event listeners
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page') + '-page';
+                showPage(page);
+            });
+        });
+        
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('register-page');
+        });
+        
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('login-page');
+        });
+        
+        editProfileBtn.addEventListener('click', () => {
+            showPage('profile-page');
+            profileCard.classList.add('hidden');
+        });
+        
+        logoutBtn.addEventListener('click', () => {
+            showPage('login-page');
+        });
+        
+        // Profile card toggle functionality
+        const profileBtn = document.getElementById('profile-btn');
+        const profileCard = document.getElementById('profile-card');
+        const closeProfile = document.getElementById('close-profile');
+        
+        profileBtn.addEventListener('click', () => {
+            profileCard.classList.toggle('hidden');
+        });
+        
+        closeProfile.addEventListener('click', () => {
+            profileCard.classList.add('hidden');
+        });
+        
+        // Close profile card when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileCard.contains(e.target) && !profileBtn.contains(e.target)) {
+                profileCard.classList.add('hidden');
+            }
+        });
+        
+        // Profile image change functionality
+        const changeImageBtn = document.getElementById('change-image-btn');
+        const profileImageInput = document.getElementById('profile-image');
+        
+        changeImageBtn.addEventListener('click', () => {
+            profileImageInput.click();
+        });
+        
+        profileImageInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // In a real app, you would update the profile image here
+                    alert('Profile image updated!');
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+        
+        // Form submission handlers
+        document.getElementById('registration-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Registration successful!');
+            showPage('login-page');
+        });
+        
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Login successful!');
+            showPage('dashboard-page');
+        });
+        
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Profile updated successfully!');
+            showPage('dashboard-page');
+        });
+    </script>
+</body>
+</html>
