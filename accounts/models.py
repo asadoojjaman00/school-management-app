@@ -2,8 +2,8 @@ from django.contrib.auth.models import AbstractUser , PermissionsMixin
 from .managers import UserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _ 
-
-
+import base64
+from django.core.files.base import ContentFile
 
 class User(AbstractUser, PermissionsMixin):
 
@@ -66,7 +66,7 @@ class User(AbstractUser, PermissionsMixin):
         return self.is_admin
     
 
-class UserProfile(User):
+class UserProfile(User, models.model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     DEPARTMENT_CHOICE=[
@@ -83,5 +83,15 @@ class UserProfile(User):
         blank=True
     )
     board_roll = models.CharField(max_length=6, unique=True, null=True, blank=False)
+    regi_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
 
-    
+    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    image_base64 = models.TextField(blank=True, null= True)
+
+    def save(self, *args, **kwargs):
+        if self.image_base64:
+            format, imgstr = self.image_base64.split('; base64,')
+            ext = format.split('/')[-1]
+            self.image = ContentFile(base64.b64encode(imgstr), name=f"{self.full_name}.{ext}")
+            self.image_base64 = None 
+        super().save(*args, **kwargs)
