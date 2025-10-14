@@ -5,6 +5,9 @@ from django.utils.translation import gettext_lazy as _
 import base64
 from django.core.files.base import ContentFile
 
+
+# custom user model section : 
+
 class User(AbstractUser, PermissionsMixin):
 
     full_name = models.CharField(max_length=255)
@@ -66,7 +69,10 @@ class User(AbstractUser, PermissionsMixin):
         return self.is_admin
     
 
-class UserProfile(User, models.model):
+
+# user profile model section : 
+
+class UserProfile(User, models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     DEPARTMENT_CHOICE=[
@@ -84,6 +90,11 @@ class UserProfile(User, models.model):
     )
     board_roll = models.CharField(max_length=6, unique=True, null=True, blank=False)
     regi_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
+    SHIFT_CHOICE =[
+        ('M', 'morning'),
+        ('D', 'day'),
+    ]
+    shif = models.CharField(max_length=1,choices=SHIFT_CHOICE, null=True, blank=True)
 
     image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     image_base64 = models.TextField(blank=True, null= True)
