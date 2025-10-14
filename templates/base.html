@@ -8,47 +8,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         body {
             font-family: 'Poppins', sans-serif;
         }
+        
         .gradient-bg {
             background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
         }
+        
         .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        .profile-card {
-            transform-origin: top right;
-            transition: all 0.3s ease;
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
         .page {
             display: none;
         }
+        
         .active-page {
             display: block;
+            animation: fadeIn 0.5s ease-in-out;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .btn-primary {
             background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
         }
+        
         .btn-primary:hover {
             opacity: 0.9;
         }
+        
         .text-primary {
             color: #10b981;
         }
+        
         .border-primary {
             border-color: #10b981;
         }
+        
+        .profile-image {
+            transition: all 0.3s ease;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen flex flex-col">
     <!-- Header/Navigation -->
     <header class="gradient-bg text-white">
         <div class="container mx-auto px-4 py-4">
@@ -67,11 +79,9 @@
                 </nav>
                 
                 <div class="flex items-center space-x-4">
-                    <button id="profile-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors">
-                        <i class="fas fa-user mr-2"></i>Profile
-                    </button>
-                    <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors hidden">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    <!-- Dynamic Login/Profile Button -->
+                    <button id="auth-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-green-50 transition-colors">
+                        <a href="{% url 'login' %}"><i class="fas fa-user mr-2"></i>Login</a>
                     </button>
                 </div>
             </div>
@@ -79,13 +89,13 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="flex-grow container mx-auto px-4 py-8">
         <!-- Login Page -->
         
+
+        <!-- Registration Page -->
         {% block content %}
         {% endblock %}
-        <!-- Registration Page -->
-        
 
         <!-- Dashboard Page -->
         
@@ -93,65 +103,6 @@
         <!-- Profile Page -->
         
     </main>
-
-    <!-- Profile Card (Hidden by default) -->
-    <div id="profile-card" class="fixed top-20 right-4 w-80 bg-white rounded-xl card-shadow p-6 profile-card hidden z-50">
-        <div class="flex justify-between items-start mb-4">
-            <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-xl font-bold">
-                    JD
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-800">John Doe</h3>
-                    <p class="text-sm text-gray-600">Student</p>
-                </div>
-            </div>
-            <button id="close-profile" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="border-t border-gray-200 pt-4">
-            <div class="mb-3">
-                <p class="text-sm text-gray-500">Date of Birth</p>
-                <p class="text-gray-800">March 15, 2005</p>
-            </div>
-            
-            <div class="mb-3">
-                <p class="text-sm text-gray-500">Roll Number</p>
-                <p class="text-gray-800">STU-2023-045</p>
-            </div>
-            
-            <div class="mb-3">
-                <p class="text-sm text-gray-500">Bio</p>
-                <p class="text-gray-800">Passionate about science and mathematics. Active member of the school's robotics club.</p>
-            </div>
-            
-            <div class="mb-3">
-                <p class="text-sm text-gray-500">Class</p>
-                <p class="text-gray-800">Grade 11 - Science</p>
-            </div>
-            
-            <div class="mb-6">
-                <p class="text-sm text-gray-500">Subjects</p>
-                <div class="flex flex-wrap gap-2 mt-1">
-                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Mathematics</span>
-                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Physics</span>
-                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Chemistry</span>
-                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Biology</span>
-                </div>
-            </div>
-            
-            <div class="flex space-x-2">
-                <button class="flex-1 bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 transition-colors" id="edit-profile-btn">
-                    <i class="fas fa-edit mr-2"></i>Edit Profile
-                </button>
-                <button class="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition-colors">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-8 mt-12">
@@ -207,114 +158,280 @@
         </div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
-        // Page navigation functionality
+        // User state management
+        let currentUser = null;
+        
+        // DOM Elements
         const pages = document.querySelectorAll('.page');
-        const navLinks = document.querySelectorAll('.nav-link');
+        const authBtn = document.getElementById('auth-btn');
         const showRegister = document.getElementById('show-register');
         const showLogin = document.getElementById('show-login');
         const logoutBtn = document.getElementById('logout-btn');
-        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const profileImageInput = document.getElementById('profile-image-input');
+        const changeImageBtn = document.getElementById('change-image-btn');
         
+        // Form elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('registration-form');
+        
+        // Profile display elements
+        const profileFullname = document.getElementById('profile-fullname');
+        const profileEmail = document.getElementById('profile-email');
+        const profileDob = document.getElementById('profile-dob');
+        const profileRoll = document.getElementById('profile-roll');
+        const profileClass = document.getElementById('profile-class');
+        const profileGender = document.getElementById('profile-gender');
+        const profileBio = document.getElementById('profile-bio');
+        const profileSubjects = document.getElementById('profile-subjects');
+        const profileImage = document.getElementById('profile-image');
+        
+        // Initialize the application
+        function init() {
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateAuthButton();
+                showPage('dashboard-page');
+            } else {
+                showPage('login-page');
+            }
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+        
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Navigation
+            showRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('register-page');
+            });
+            
+            showLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('login-page');
+            });
+            
+            authBtn.addEventListener('click', handleAuthButtonClick);
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Forms
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegistration);
+            
+            // Profile image
+            changeImageBtn.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+            
+            profileImageInput.addEventListener('change', handleProfileImageChange);
+        }
+        
+        // Handle authentication button click
+        function handleAuthButtonClick() {
+            if (currentUser) {
+                // User is logged in, show profile
+                updateProfileDisplay();
+                showPage('profile-page');
+            } else {
+                // User is not logged in, show login
+                showPage('login-page');
+            }
+        }
+        
+        // Handle login form submission
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // In a real app, you would validate credentials with a server
+            // For demo purposes, we'll check if the user exists in localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Login successful
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateAuthButton();
+                showPage('dashboard-page');
+                
+                // Show success message
+                alert('Login successful!');
+            } else {
+                // Login failed
+                alert('Invalid email or password. Please try again.');
+            }
+        }
+        
+        // Handle registration form submission
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const dob = document.getElementById('dob').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                alert('An account with this email already exists.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                fullname,
+                email,
+                password, // In a real app, you would hash this
+                dob,
+                gender,
+                rollNumber: `STU-${new Date().getFullYear()}-${String(users.length + 1).padStart(3, '0')}`,
+                class: 'Grade 11 - Science',
+                bio: 'Passionate about science and mathematics. Active member of the school\'s robotics club.',
+                subjects: ['Mathematics', 'Physics', 'Chemistry', 'Biology'],
+                profileImage: null
+            };
+            
+            // Save user
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Log the user in
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateAuthButton();
+            showPage('dashboard-page');
+            
+            // Show success message
+            alert('Registration successful!');
+        }
+        
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateAuthButton();
+            showPage('login-page');
+            
+            // Show logout message
+            alert('You have been logged out.');
+        }
+        
+        // Handle profile image change
+        function handleProfileImageChange(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Update profile image in UI
+                    profileImage.style.backgroundImage = `url(${event.target.result})`;
+                    profileImage.innerHTML = '';
+                    
+                    // Update user data
+                    if (currentUser) {
+                        currentUser.profileImage = event.target.result;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // Update users array
+                        const users = JSON.parse(localStorage.getItem('users') || '[]');
+                        const userIndex = users.findIndex(u => u.id === currentUser.id);
+                        if (userIndex !== -1) {
+                            users[userIndex].profileImage = event.target.result;
+                            localStorage.setItem('users', JSON.stringify(users));
+                        }
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        }
+        
+        // Update authentication button based on user state
+        function updateAuthButton() {
+            if (currentUser) {
+                // User is logged in, show profile button
+                authBtn.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold mr-2">
+                            ${currentUser.fullname.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span>Profile</span>
+                    </div>
+                `;
+            } else {
+                // User is not logged in, show login button
+                authBtn.innerHTML = '<i class="fas fa-user mr-2"></i>Login';
+            }
+        }
+        
+        // Update profile display with current user data
+        function updateProfileDisplay() {
+            if (!currentUser) return;
+            
+            profileFullname.textContent = currentUser.fullname;
+            profileEmail.textContent = currentUser.email;
+            profileDob.textContent = formatDate(currentUser.dob);
+            profileRoll.textContent = currentUser.rollNumber;
+            profileClass.textContent = currentUser.class;
+            profileGender.textContent = currentUser.gender ? currentUser.gender.charAt(0).toUpperCase() + currentUser.gender.slice(1) : 'Not specified';
+            profileBio.textContent = currentUser.bio;
+            
+            // Update profile image
+            if (currentUser.profileImage) {
+                profileImage.style.backgroundImage = `url(${currentUser.profileImage})`;
+                profileImage.innerHTML = '';
+            } else {
+                profileImage.style.backgroundImage = '';
+                profileImage.innerHTML = currentUser.fullname.split(' ').map(n => n[0]).join('');
+            }
+            
+            // Update subjects
+            profileSubjects.innerHTML = '';
+            currentUser.subjects.forEach(subject => {
+                const subjectElement = document.createElement('span');
+                subjectElement.className = 'px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full';
+                subjectElement.textContent = subject;
+                profileSubjects.appendChild(subjectElement);
+            });
+        }
+        
+        // Show a specific page and hide others
         function showPage(pageId) {
             pages.forEach(page => {
                 page.classList.remove('active-page');
             });
             document.getElementById(pageId).classList.add('active-page');
-            
-            // Show/hide logout button based on page
-            if (pageId === 'login-page' || pageId === 'register-page') {
-                logoutBtn.classList.add('hidden');
-            } else {
-                logoutBtn.classList.remove('hidden');
-            }
         }
         
-        // Navigation event listeners
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = link.getAttribute('data-page') + '-page';
-                showPage(page);
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return 'Not specified';
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-        });
+        }
         
-        showRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            showPage('register-page');
-        });
-        
-        showLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            showPage('login-page');
-        });
-        
-        editProfileBtn.addEventListener('click', () => {
-            showPage('profile-page');
-            profileCard.classList.add('hidden');
-        });
-        
-        logoutBtn.addEventListener('click', () => {
-            showPage('login-page');
-        });
-        
-        // Profile card toggle functionality
-        const profileBtn = document.getElementById('profile-btn');
-        const profileCard = document.getElementById('profile-card');
-        const closeProfile = document.getElementById('close-profile');
-        
-        profileBtn.addEventListener('click', () => {
-            profileCard.classList.toggle('hidden');
-        });
-        
-        closeProfile.addEventListener('click', () => {
-            profileCard.classList.add('hidden');
-        });
-        
-        // Close profile card when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!profileCard.contains(e.target) && !profileBtn.contains(e.target)) {
-                profileCard.classList.add('hidden');
-            }
-        });
-        
-        // Profile image change functionality
-        const changeImageBtn = document.getElementById('change-image-btn');
-        const profileImageInput = document.getElementById('profile-image');
-        
-        changeImageBtn.addEventListener('click', () => {
-            profileImageInput.click();
-        });
-        
-        profileImageInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    // In a real app, you would update the profile image here
-                    alert('Profile image updated!');
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-        
-        // Form submission handlers
-        document.getElementById('registration-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Registration successful!');
-            showPage('login-page');
-        });
-        
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Login successful!');
-            showPage('dashboard-page');
-        });
-        
-        document.getElementById('profile-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Profile updated successfully!');
-            showPage('dashboard-page');
-        });
+        // Initialize the application when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
