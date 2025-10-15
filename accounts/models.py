@@ -78,13 +78,29 @@ class UserProfile(User, models.Model):
     DEPARTMENT_CHOICE=[
         ('cst', 'CST'),
         ('civil', 'CIVIL'),
-        ('eee', 'EEE'),
+        ('ent', 'ENT'),
         ('aidt', 'AIDT'),
     ]
 
     department = models.CharField(
         max_length=6,
         choices=DEPARTMENT_CHOICE,
+        null=True,
+        blank=True
+    )
+    SEMESTER_CHOICE =[
+        ('1', '1st'),
+        ('2', '2nd'),
+        ('3', '3rd'),
+        ('4', '4th'),
+        ('5', '5th'),
+        ('6', '6th'),
+        ('7', '7th'),
+        ('8', '8th'),
+    ]
+    semester = models.CharField(
+        max_length=1,
+        choices= SEMESTER_CHOICE,
         null=True,
         blank=True
     )
