@@ -17,10 +17,9 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
 
         username = email.split('@')[0].lower().replace(' ', '_')[:40]
-        extra_fields.setdefault('username', username)
-
+        
         user = self.model(
-            username=username,
+            email=email,
             full_name=full_name,
             **extra_fields
         )
@@ -30,7 +29,7 @@ class UserManager(BaseUserManager):
         return user
     
     def create_user(self, email, full_name=None, password=None, **extra_fields):
-
+        extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_admin", False)
         extra_fields.setdefault("is_superuser", False)
         extra_fields.setdefault("is_active", False)
@@ -39,6 +38,7 @@ class UserManager(BaseUserManager):
     
     def create_superuser(self, email, full_name= None, password=None, **extra_fields):
 
+        extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_admin", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)

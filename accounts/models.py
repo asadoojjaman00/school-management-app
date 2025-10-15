@@ -58,21 +58,16 @@ class User(AbstractUser, PermissionsMixin):
             models.Index(fields=['username']),
         ] 
     
-    def has_perm(self, perm, obj=None):
-        return True
-    
-    def has_module_perms(self, app_label):
-        return True
-    
-    @property
-    def is_staff(self):
-        return self.is_admin
-    
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+
 
 
 # user profile model section : 
 
-class UserProfile(User, models.Model):
+class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     DEPARTMENT_CHOICE=[
@@ -110,7 +105,7 @@ class UserProfile(User, models.Model):
         ('M', 'morning'),
         ('D', 'day'),
     ]
-    shif = models.CharField(max_length=1,choices=SHIFT_CHOICE, null=True, blank=True)
+    shift = models.CharField(max_length=1,choices=SHIFT_CHOICE, null=True, blank=True)
 
     image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     image_base64 = models.TextField(blank=True, null= True)
