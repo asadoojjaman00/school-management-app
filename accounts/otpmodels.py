@@ -56,7 +56,7 @@ def send_otp_email(user):
 
 """
 
-email otp send function : 
+email otp verify function : 
 
 
 """
