@@ -9,16 +9,16 @@ def generate_otp():
 
 
 class EmailOTP(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="email_otps")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="email_otp")
     otp = models.CharField(max_length=6, default=generate_otp)
     created_at = models.DateTimeField(auto_now_add=True)
     expiry_time = models.DateTimeField()
 
     def save(self, *args, **kwargs):
         if not self.expiry_time:
-            self.expiry_time = timezone.now() + timedelta(seconds=30)
-
+            self.expiry_time = timezone.now() + timedelta(minutes=2)
         super().save(*args,**kwargs)
+
     def is_expired(self, *args, **kwargs):
         return timezone.now() > self.expiry_time
     
@@ -40,16 +40,16 @@ email otp send function :
 
 """
 
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
 
-def send_otp_email(user):
-    otp_entry = EmailOTP.objects.create(user=user)
-    subject = 'Your verification OTP'
-    message = f'Hello {user.full_name}, \nYour OTP is : {otp_entry.otp}\nIt is valid for 30 seconds.'
-    from_email = 'asadoojjaman.cse@gmail.com'
-    recipient_list = [user.email]
-    send_mail(subject, message, from_email, recipient_list) 
-    return otp_entry
+# def send_otp_email(user):
+#     otp_entry = EmailOTP.objects.create(user=user)
+#     subject = 'Your verification OTP'
+#     message = f'Hello {user.full_name}, \nYour OTP is : {otp_entry.otp}\ndon"t share your otp'
+#     from_email = 'asadoojjaman.cse@gmail.com'
+#     recipient_list = [user.email]
+#     send_mail(subject, message, from_email, recipient_list) 
+#     return otp_entry
 
 
 

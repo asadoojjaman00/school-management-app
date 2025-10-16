@@ -7,11 +7,16 @@ from .models import User,UserProfile
 # user registration form : 
 
 class UserRegistrationForm(UserCreationForm):
-    otp = forms.CharField(max_length=6,required=False,label='Enter your otp')
     class Meta:
-        mode = User
+        model = User
         fields = ['full_name', 'email', 'date_of_birth', 'gender','password1', 'password2']
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Email already registered')
+        return email
+    
 # user creation form : 
 
 class UserProfileCreation(forms.ModelForm):

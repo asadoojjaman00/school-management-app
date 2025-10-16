@@ -16,7 +16,7 @@ class UserManager(BaseUserManager):
 
         email = self.normalize_email(email)
 
-        username = email.split('@')[0].lower().replace(' ', '_')[:40]
+        
         
         user = self.model(
             email=email,

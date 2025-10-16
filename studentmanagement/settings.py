@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'home'
+    'home',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

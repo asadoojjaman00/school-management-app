@@ -14,7 +14,7 @@ class User(AbstractUser, PermissionsMixin):
 
     username = models.CharField(
         _("username"),
-        max_length=40,
+        max_length=255,
         unique=True,
         db_index=True,
         error_messages={
