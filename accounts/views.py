@@ -39,7 +39,7 @@ def verify_otp_view(request, user_id):
     if request.method == 'POST':
         otp = request.POST.get('otp')
         result = verify_otp(user, otp)
-        if result.error:   # 🔴 এই লাইনেই error!
+        if result.error:   
             messages.error(request, result.error)
         else:
             messages.success(request, "OTP verified successfully!")
