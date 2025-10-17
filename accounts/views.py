@@ -2,8 +2,9 @@ from django.shortcuts import render,redirect
 from .forms import UserRegistrationForm,UserProfileCreation,UserLoginForm
 from django.contrib.auth import login,logout
 from django.contrib import messages
-from .models import User
+from .models import User,UserProfile
 from .utils import verify_otp,resend_otp
+from django.db import IntegrityError
 
 
 
@@ -16,13 +17,16 @@ def register_view(request):
             user = user_form.save(commit=False)
             user.is_active = False
             user.username = user.email.split('@')[0] + str(User.objects.count() + 1)
-            user.save()
-            messages.success(request, "Account created please verify your email.")
+            try:
+                user.save()
+                messages.success(request, "Account created please verify your email.")
+            except IntegrityError:
+                messages.error(request, "Email already exists")
+                return redirect('register')
+
             
-            if not user.is_active:
-                verify_otp_view(user,user.id)
-                request.session['pending email'] = user.email
-                return redirect('verify_otp_page', user_id = user.id)
+            request.session['pending_email'] = user.email
+            return redirect('verify_otp_page', user_id = user.id)
             
         
 
@@ -38,13 +42,13 @@ def verify_otp_view(request, user_id):
     user = User.objects.get(id=user_id)
     if request.method == 'POST':
         otp = request.POST.get('otp')
-        result = verify_otp(user, otp)
-        if result.error:   
-            messages.error(request, result.error)
+        success, message = verify_otp(user, otp)
+        if not success:   
+            messages.error(request, message)
         else:
-            messages.success(request, "OTP verified successfully!")
+            messages.success(request, message)
             return redirect('login')
-    return render(request, 'verify_otp.html')
+    return render(request, 'verifyOTP.html')
  
 
 
