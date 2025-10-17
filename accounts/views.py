@@ -55,6 +55,10 @@ def verify_otp_view(request, user_id):
 
 
 
+
+
+
+
 # login view function : 
 def login_view(request):
     if request.method == 'POST':
