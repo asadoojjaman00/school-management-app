@@ -2,106 +2,93 @@
 {% load static %} 
 {% block content %}
 
-<div id="profile-page" class="page">
-  <div class="max-w-4xl mx-auto bg-white rounded-xl card-shadow p-8">
-    <div class="text-center mb-8">
-      <h2 class="text-3xl font-bold text-gray-800 mb-2">My Profile</h2>
-      <p class="text-gray-600">Manage your account information</p>
-    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Profile Image Section -->
-      <div class="md:col-span-1 flex flex-col items-center">
-        <div class="relative mb-4">
-          <div
-            id="profile-image"
-            class="w-40 h-40 gradient-bg rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4 profile-image"
-          >
-            <!-- Profile initials will be displayed here -->
-          </div>
-          <button
-            class="absolute bottom-2 right-2 bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition-colors"
-          >
-            <i class="fas fa-camera"></i>
-          </button>
+<div class="flex justify-center items-center min-h-[80vh]">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-2xl card-shadow">
+
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">User Profile</h2>
+            <a href="#" 
+               class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                Logout
+            </a>
         </div>
-        <input
-          type="file"
-          id="profile-image-input"
-          class="hidden"
-          accept="image/*"
-        />
-        <button
-          id="change-image-btn"
-          class="text-green-600 font-medium hover:text-green-800 transition-colors"
-        >
-          Change Profile Image
-        </button>
-      </div>
 
-      <!-- Profile Details -->
-      <div class="md:col-span-2">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Full Name</p>
-            <p
-              id="profile-fullname"
-              class="text-gray-800 text-lg font-medium"
-            ></p>
-          </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-3 p-3 rounded-md 
+                    {% if message.tags == 'success' %}
+                        bg-green-100 text-green-800
+                    {% elif message.tags == 'error' %}
+                        bg-red-100 text-red-800
+                    {% else %}
+                        bg-gray-100 text-gray-800
+                    {% endif %}
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Email Address</p>
-            <p id="profile-email" class="text-gray-800 text-lg font-medium"></p>
-          </div>
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
 
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Date of Birth</p>
-            <p id="profile-dob" class="text-gray-800 text-lg font-medium"></p>
-          </div>
+            <div class="flex items-center space-x-6">
+                {% if user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" 
+                         alt="Profile Picture" 
+                         class="w-24 h-24 rounded-full object-cover border">
+                {% else %}
+                    <img src="{% static 'images/default_profile.png' %}" 
+                         alt="Default Profile" 
+                         class="w-24 h-24 rounded-full object-cover border">
+                {% endif %}
 
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Roll Number</p>
-            <p id="profile-roll" class="text-gray-800 text-lg font-medium"></p>
-          </div>
-
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Class</p>
-            <p id="profile-class" class="text-gray-800 text-lg font-medium"></p>
-          </div>
-
-          <div class="mb-4">
-            <p class="text-sm text-gray-500">Gender</p>
-            <p
-              id="profile-gender"
-              class="text-gray-800 text-lg font-medium"
-            ></p>
-          </div>
-
-          <div class="mb-4 md:col-span-2">
-            <p class="text-sm text-gray-500">Bio</p>
-            <p id="profile-bio" class="text-gray-800"></p>
-          </div>
-
-          <div class="mb-4 md:col-span-2">
-            <p class="text-sm text-gray-500 mb-2">Subjects</p>
-            <div id="profile-subjects" class="flex flex-wrap gap-2">
-              <!-- Subjects will be displayed here -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Profile Image</label>
+                    {{ userProfile.image }}
+                </div>
             </div>
-          </div>
-        </div>
 
-        <div class="flex justify-end space-x-4 mt-6">
-          <button
-            id="logout-btn"
-            class="px-6 py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors"
-          >
-            <i class="fas fa-sign-out-alt mr-2"></i>Logout
-          </button>
-        </div>
-      </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Department</label>
+                    {{ userProfile.department }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Semester</label>
+                    {{ userProfile.semester }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Board Roll</label>
+                    {{ userProfile.board_roll }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Registration No.</label>
+                    {{ userProfile.regi_number }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Shift</label>
+                    {{ userProfile.shift }}
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6">
+                <button type="submit"
+                        class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                    Save
+                </button>
+
+                <a href="{% url 'dashboard' %}" 
+                   class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
     </div>
-  </div>
 </div>
+
+
 
 {% endblock %}

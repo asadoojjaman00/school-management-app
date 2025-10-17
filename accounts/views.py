@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
-from .forms import UserRegistrationForm,UserProfileCreation
-# from django.contrib.auth import login
-from .otpmodels import verify_otp, generate_otp, EmailOTP
+from .forms import UserRegistrationForm,UserProfileCreation,UserLoginForm
+from django.contrib.auth import login,logout
 from django.contrib import messages
 from .models import User
-from django.core.mail import send_mail
+from .utils import verify_otp,resend_otp
+
+
 
 # register view function : 
 def register_view(request):
@@ -16,19 +17,14 @@ def register_view(request):
             user.is_active = False
             user.username = user.email.split('@')[0] + str(User.objects.count() + 1)
             user.save()
-            
-            otp = generate_otp()
-            EmailOTP.objects.create(user=user, otp=otp)
-
-            send_mail(
-                subject=f"{user.full_name} your OTP is here",
-                message=f"otp : {otp} don't share anyone",
-                from_email='asadoojjaman.cse@gmail.com',
-                recipient_list=[user.email],
-                fail_silently=True
-            )
             messages.success(request, "Account created please verify your email.")
-            return redirect('verify_otp_page', user_id=user.id)
+            
+            if not user.is_active:
+                verify_otp_view(user,user.id)
+                request.session['pending email'] = user.email
+                return redirect('verify_otp_page', user_id = user.id)
+            
+        
 
     else:
         user_form = UserRegistrationForm()
@@ -40,30 +36,44 @@ def register_view(request):
 # otp verification view function: 
 def verify_otp_view(request, user_id):
     user = User.objects.get(id=user_id)
-
     if request.method == 'POST':
         otp = request.POST.get('otp')
-        success, message =verify_otp(user,otp)
-        if success:
-            messages.success(request, message)
-            return redirect('profile.html')
+        result = verify_otp(user, otp)
+        if result.error:   # 🔴 এই লাইনেই error!
+            messages.error(request, result.error)
         else:
-            message.error(request, message)
-
-    return render(request, 'verifyOTP.html', {'user':user}) 
-
-
-
+            messages.success(request, "OTP verified successfully!")
+            return redirect('login')
+    return render(request, 'verify_otp.html')
+ 
 
 
-# # login view function : 
-# def login_view(request):
-#     return render(request, 'login.html')
+
+
+
+# login view function : 
+def login_view(request):
+    if request.method == 'POST':
+        login_form = UserLoginForm(request.POST)
+        if login_form.is_valid():
+            user = login_form.cleaned_data['user']
+
+            if not user.is_active:
+                verify_otp_view(user)
+                request.session['pending email'] = user.email
+                return redirect('verify_otp_page', user_id = user.id)
+            
+        login(request, user)
+        return redirect('userProfile')
+    else:
+        login_form = UserLoginForm()
+    return render(request, 'login.html', {'login_form': login_form})
 
 
 # userprofile view function : 
 
 def userProfile_view(request):
+    profile = request.User.UserProfile
     if request.method == 'POST':
         userProfile = UserProfileCreation(request.POST)
         if userProfile.is_valid():
@@ -73,4 +83,9 @@ def userProfile_view(request):
         userProfile = UserProfileCreation(instance=profile)
     return render(request, 'profile.html', {'userProfile':userProfile})
 
- 
+
+def resendOTP(request, user_id):
+    user = User.objects.get(id=user_id)
+    success, message = resend_otp(user)
+    messages.info(request,message)
+    return redirect('verify_otp_page',user_id=user.id)
