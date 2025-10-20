@@ -3,7 +3,7 @@ from .forms import UserRegistrationForm,UserProfileCreation,UserLoginForm
 from django.contrib.auth import login,logout
 from django.contrib import messages
 from .models import User,UserProfile
-from .utils import verify_otp,resend_otp
+from .utils import verify_otp,resend_otp,send_otp_email
 from django.db import IntegrityError
 
 
@@ -17,17 +17,16 @@ def register_view(request):
             user = user_form.save(commit=False)
             user.is_active = False
             user.username = user.email.split('@')[0] + str(User.objects.count() + 1)
-            try:
-                user.save()
-                messages.success(request, "Account created please verify your email.")
-            except IntegrityError:
-                messages.error(request, "Email already exists")
-                return redirect('register')
+            
+            user.save()
+            messages.success(request, "Account created please verify your email.")
+            send_otp_email(user)
+            
+        messages.error(request, "Email already exists")
+        return redirect('register')
 
             
-            request.session['pending_email'] = user.email
-            return redirect('verify_otp_page', user_id = user.id)
-            
+           
         
 
     else:
@@ -67,7 +66,6 @@ def login_view(request):
             user = login_form.cleaned_data['user']
 
             if not user.is_active:
-                verify_otp_view(user)
                 request.session['pending email'] = user.email
                 return redirect('verify_otp_page', user_id = user.id)
             
