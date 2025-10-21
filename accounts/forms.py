@@ -42,4 +42,4 @@ class UserLoginForm(forms.Form):
         if not user.is_active:
             raise forms.ValidationError('please verify your email than login')
         self.user = user
-        return cleaned_data        
+        return cleaned_data

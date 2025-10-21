@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from .models import User
 from .utils import verify_otp,resend_otp,send_otp_email
-
+from django.db import IntegrityError
 
 
 
@@ -13,14 +13,18 @@ def register_view(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            user = user_form.save(commit=False)
-            user.username = user.email.split('@')[0]
-            user.is_active = False
-            user.save()
+            try:
+                user = user_form.save(commit=False)
+                user.username = user.email.split('@')[0] + str(User.objects.filter)
+                user.is_active = False
+                user.save()
 
-            send_otp_email(user)
-            messages.success(request, "Account created! Please verify your email.")
-            return redirect('verify_otp_page', user_id=user.id)
+                send_otp_email(user)
+                messages.success(request, "Account created! Please verify your email.")
+                return redirect('verify_otp_page', user_id=user.id)
+            except IntegrityError:
+                messages.error(request, f"{field.capitalize()}: {error}")
+
         else:
             # Show all form errors
             for field, errors in user_form.errors.items():
@@ -44,7 +48,7 @@ def verify_otp_view(request, user_id):
             messages.success(request, message)
             return redirect('login')
     else:
-        return render(request, 'verifyOTP.html', {'user_id' : user.id})
+        return render(request, 'verifyOTP.html', {'user':user})
  
 
 
@@ -60,7 +64,7 @@ def login_view(request):
     if request.method == 'POST':
         login_form = UserLoginForm(request.POST)
         if login_form.is_valid():
-            user = login_form.cleaned_data['user']
+            user = login_form.user
 
             if not user.is_active:
                 request.session['pending_email'] = user.email
@@ -70,7 +74,7 @@ def login_view(request):
             return redirect('userprofile')
     else:
         login_form = UserLoginForm()
-    return render(request, 'login.html', {'user_id' : user.id})
+    return render(request, 'login.html', {'login_form':login_form})
 
 
 # userprofile view function : 

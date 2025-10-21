@@ -1,12 +1,12 @@
 from django.core.mail import send_mail
 from .otpmodels import EmailOTP
-
+# from decouple import config
 
 def send_otp_email(user):
     otp_entry = EmailOTP.objects.create(user=user)
     subject = 'Your verification OTP'
     message = f'Hello {user.full_name}, \nYour OTP is : {otp_entry.otp}\ndon"t share your otp'
-    from_email = 'asadoojjaman.cse@gmail.com'
+    from_email = 'gmail--hide'
     recipient_list = [user.email]
     send_mail(subject, message, from_email, recipient_list) 
     return otp_entry
