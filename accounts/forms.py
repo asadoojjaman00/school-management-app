@@ -21,7 +21,7 @@ class UserRegistrationForm(UserCreationForm):
 
 class UserProfileCreation(forms.ModelForm):
     class Meta:
-        mode = UserProfile
+        model = UserProfile
         fields = ['department', 'semester', 'board_roll','regi_number', 'shift', 'image']
 
 # user login form : 
@@ -41,5 +41,5 @@ class UserLoginForm(forms.Form):
             raise forms.ValidationError('email or password wrong')
         if not user.is_active:
             raise forms.ValidationError('please verify your email than login')
-        cleaned_data['user'] = user
+        self.user = user
         return cleaned_data        

@@ -1,39 +1,35 @@
 from django.shortcuts import render,redirect
 from .forms import UserRegistrationForm,UserProfileCreation,UserLoginForm
-from django.contrib.auth import login,logout
+from django.contrib.auth import login
 from django.contrib import messages
-from .models import User,UserProfile
+from .models import User
 from .utils import verify_otp,resend_otp,send_otp_email
-from django.db import IntegrityError
+
 
 
 
 # register view function : 
 def register_view(request):
-    
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
             user = user_form.save(commit=False)
+            user.username = user.email.split('@')[0]
             user.is_active = False
-            user.username = user.email.split('@')[0] + str(User.objects.count() + 1)
-            
             user.save()
-            messages.success(request, "Account created please verify your email.")
+
             send_otp_email(user)
-            
-        messages.error(request, "Email already exists")
-        return redirect('register')
-
-            
-           
-        
-
+            messages.success(request, "Account created! Please verify your email.")
+            return redirect('verify_otp_page', user_id=user.id)
+        else:
+            # Show all form errors
+            for field, errors in user_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
         user_form = UserRegistrationForm()
+
     return render(request, 'register.html', {'user_form': user_form})
-
-
 
 
 # otp verification view function: 
@@ -47,7 +43,8 @@ def verify_otp_view(request, user_id):
         else:
             messages.success(request, message)
             return redirect('login')
-    return render(request, 'verifyOTP.html')
+    else:
+        return render(request, 'verifyOTP.html', {'user_id' : user.id})
  
 
 
@@ -66,20 +63,20 @@ def login_view(request):
             user = login_form.cleaned_data['user']
 
             if not user.is_active:
-                request.session['pending email'] = user.email
+                request.session['pending_email'] = user.email
                 return redirect('verify_otp_page', user_id = user.id)
             
-        login(request, user)
-        return redirect('userProfile')
+            login(request, user)
+            return redirect('userprofile')
     else:
         login_form = UserLoginForm()
-    return render(request, 'login.html', {'login_form': login_form})
+    return render(request, 'login.html', {'user_id' : user.id})
 
 
 # userprofile view function : 
 
 def userProfile_view(request):
-    profile = request.User.UserProfile
+    profile = request.User.userprofile
     if request.method == 'POST':
         userProfile = UserProfileCreation(request.POST)
         if userProfile.is_valid():
