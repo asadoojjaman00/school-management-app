@@ -1,19 +1,22 @@
-{% extends 'base.html' %} 
-{% load static %} 
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
-
 <div class="flex justify-center items-center min-h-[80vh]">
-    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-2xl card-shadow">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-3xl card-shadow">
 
+        <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-semibold text-gray-800">User Profile</h2>
-            <a href="#" 
-               class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                Logout
-            </a>
+            <div class="flex space-x-3">
+                <a href="{% url 'logout' %}" 
+                   class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                    Logout
+                </a>
+            </div>
         </div>
 
+        <!-- Messages -->
         {% if messages %}
             {% for message in messages %}
                 <div class="mb-3 p-3 rounded-md 
@@ -23,72 +26,148 @@
                         bg-red-100 text-red-800
                     {% else %}
                         bg-gray-100 text-gray-800
-                    {% endif %}
-                ">
+                    {% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
 
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-
-            <div class="flex items-center space-x-6">
+        <!-- Profile Display Section -->
+        <div id="profile-display" class="flex flex-col md:flex-row items-center md:items-start mb-6 space-y-4 md:space-y-0 md:space-x-6">
+            <div>
                 {% if user.profile.image %}
                     <img src="{{ user.profile.image.url }}" 
                          alt="Profile Picture" 
-                         class="w-24 h-24 rounded-full object-cover border">
+                         class="w-32 h-32 rounded-full object-cover border">
                 {% else %}
                     <img src="{% static 'images/default_profile.png' %}" 
                          alt="Default Profile" 
-                         class="w-24 h-24 rounded-full object-cover border">
+                         class="w-32 h-32 rounded-full object-cover border">
                 {% endif %}
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Profile Image</label>
-                    {{ userProfile.image }}
-                </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Department</label>
-                    {{ userProfile.department }}
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Semester</label>
-                    {{ userProfile.semester }}
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Board Roll</label>
-                    {{ userProfile.board_roll }}
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Registration No.</label>
-                    {{ userProfile.regi_number }}
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Shift</label>
-                    {{ userProfile.shift }}
-                </div>
+            <div class="flex-1">
+                <p><span class="font-semibold">Department:</span> {{ userProfile.department }}</p>
+                <p><span class="font-semibold">Semester:</span> {{ userProfile.semester }}</p>
+                <p><span class="font-semibold">Board Roll:</span> {{ userProfile.board_roll }}</p>
+                <p><span class="font-semibold">Registration No:</span> {{ userProfile.regi_number }}</p>
+                <p><span class="font-semibold">Shift:</span> {{ userProfile.shift }}</p>
             </div>
+        </div>
 
-            <div class="flex justify-end space-x-3 mt-6">
-                <button type="submit"
-                        class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
-                    Save
-                </button>
+        <!-- Edit Button -->
+        <div class="flex justify-end mb-4">
+            <button id="edit-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                Edit Profile
+            </button>
+        </div>
 
-                <a href="{% url 'dashboard' %}" 
-                   class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">
-                    Cancel
-                </a>
-            </div>
-        </form>
+        <!-- Edit Form (initially hidden) -->
+        <div id="edit-form" class="hidden">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6 bg-gray-50 p-6 rounded-lg shadow-md">
+                {% csrf_token %}
+
+                <!-- Profile Image -->
+                <div class="flex items-center space-x-6">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" 
+                             alt="Profile Picture" 
+                             class="w-24 h-24 rounded-full object-cover border">
+                    {% else %}
+                        <img src="{% static 'images/default_profile.png' %}" 
+                             alt="Default Profile" 
+                             class="w-24 h-24 rounded-full object-cover border">
+                    {% endif %}
+                    <div class="flex-1">
+                        <label class="block text-gray-700 font-medium mb-1">Profile Image</label>
+                        {{ userProfile.image }}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Department -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Department</label>
+                        <select name="department" class="w-full border border-gray-300 rounded-lg p-2">
+                            {% for dept in departments %}
+                                <option value="{{ dept }}" {% if userProfile.department == dept %}selected{% endif %}>
+                                    {{ dept|upper }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Semester -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Semester</label>
+                        <select name="semester" class="w-full border border-gray-300 rounded-lg p-2">
+                            {% for i in semesters %}
+                                <option value="{{ i }}" {% if userProfile.semester|stringformat:"s" == i|stringformat:"s" %}selected{% endif %}>
+                                    {{ i }}{% if i == 1 %}st{% elif i == 2 %}nd{% elif i == 3 %}rd{% else %}th{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Shift -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Shift</label>
+                        <select name="shift" class="w-full border border-gray-300 rounded-lg p-2">
+                            {% for s in shifts %}
+                                <option value="{{ s }}" {% if userProfile.shift == s %}selected{% endif %}>
+                                    {{ s|capfirst }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Board Roll -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Board Roll</label>
+                        {{ userProfile.board_roll }}
+                    </div>
+
+                    <!-- Registration No -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Registration No</label>
+                        {{ userProfile.regi_number }}
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="submit"
+                            class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                        Save
+                    </button>
+                    <button type="button" id="cancel-btn"
+                            class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
 
     </div>
 </div>
 
+<!-- JS for show/hide edit form -->
+<script>
+    const editBtn = document.getElementById('edit-btn');
+    const editForm = document.getElementById('edit-form');
+    const profileDisplay = document.getElementById('profile-display');
+    const cancelBtn = document.getElementById('cancel-btn');
 
+    editBtn.addEventListener('click', () => {
+        editForm.classList.remove('hidden');
+        profileDisplay.classList.add('hidden');
+        editBtn.classList.add('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        editForm.classList.add('hidden');
+        profileDisplay.classList.remove('hidden');
+        editBtn.classList.remove('hidden');
+    });
+</script>
 
 {% endblock %}

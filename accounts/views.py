@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import UserRegistrationForm,UserProfileCreation,UserLoginForm
-from django.contrib.auth import login
+from django.contrib.auth import login,logout
 from django.contrib import messages
 from .models import User
 from .utils import verify_otp,resend_otp,send_otp_email
@@ -71,7 +71,7 @@ def login_view(request):
                 return redirect('verify_otp_page', user_id = user.id)
             
             login(request, user)
-            return redirect('userprofile')
+            return redirect('userProfile')
     else:
         login_form = UserLoginForm()
     return render(request, 'login.html', {'login_form':login_form})
@@ -80,15 +80,26 @@ def login_view(request):
 # userprofile view function : 
 
 def userProfile_view(request):
-    profile = request.User.userprofile
+    profile = request.user.profile
+    semester = list(range(1,9))
+    department = ['CST', 'CIVIL', 'ENT', 'AIDT']
+    shift = ['morning', 'day']
     if request.method == 'POST':
-        userProfile = UserProfileCreation(request.POST)
-        if userProfile.is_valid():
+        form = UserProfileCreation(request.POST)
+        if form.is_valid():
+            userProfile = form.save(commit=False)
+            userProfile.user = request.user
             userProfile.save()
-            return redirect('profile')
+            return redirect('dashboard')
     else:
-        userProfile = UserProfileCreation(instance=profile)
-    return render(request, 'profile.html', {'userProfile':userProfile})
+        form = UserProfileCreation(instance=profile)
+    context = {
+        'form':form,
+        'semester':semester,
+        'department':department,
+        'shift':shift
+    }
+    return render(request, 'profile.html', context)
 
 
 def resendOTP(request, user_id):
@@ -96,3 +107,7 @@ def resendOTP(request, user_id):
     success, message = resend_otp(user)
     messages.info(request,message)
     return redirect('verify_otp_page',user_id=user.id)
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')

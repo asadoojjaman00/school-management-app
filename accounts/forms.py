@@ -22,7 +22,7 @@ class UserRegistrationForm(UserCreationForm):
 class UserProfileCreation(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['department', 'semester', 'board_roll','regi_number', 'shift', 'image']
+        fields = [ 'image', 'department', 'semester', 'board_roll','regi_number', 'shift']
 
 # user login form : 
 
